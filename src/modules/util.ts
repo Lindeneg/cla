@@ -239,8 +239,8 @@ export const tryGetNumber = (et: string): number | string => {
     return et;
 }
 
-export const createListeners = (EventSummary: EventSummary): EventListener[] => {
-    const callback: (event: Event) => boolean = EventSummary.handleEvent.bind(EventSummary);
+export const createListeners = (eventSummary: EventSummary): EventListener[] => {
+    const callback: (event: Event) => boolean = eventSummary.handleEvent.bind(eventSummary);
     const result: EventListener[] = [];
     const events: [Window | Document, string][] = [
         [G_DOC, NAMED_EVENTS[0]],
