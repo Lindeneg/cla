@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "outDir": "./dist",
+    "module": "CommonJS"
+  },
+  "files": [
+    "./src/index.ts",
+    "./src/modules/types.ts",
+    "./src/modules/util.ts",
+    "./src/modules/summary.ts",
+    "./src/modules/vector.ts",
+    "./src/modules/constants.ts",
+    "./src/modules/mutations.ts",
+  ]
+}
