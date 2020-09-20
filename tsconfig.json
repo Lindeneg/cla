@@ -8,7 +8,7 @@
     "./src/index.ts",
     "./src/modules/types.ts",
     "./src/modules/util.ts",
-    "./src/modules/summary.ts",
+    "src/modules/eventSummary.ts",
     "./src/modules/vector.ts",
     "./src/modules/constants.ts",
     "./src/modules/mutations.ts",

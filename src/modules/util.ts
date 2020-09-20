@@ -16,7 +16,7 @@ import {
 } from './constants';
 import {
     EventSummary
-} from './summary'
+} from './eventSummary'
 
 
 export const encodeB64 = (data: string): string => {
