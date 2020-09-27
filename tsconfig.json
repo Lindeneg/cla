@@ -1,16 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ES5",
-    "outDir": "./dist",
-    "module": "CommonJS"
-  },
-  "files": [
-    "./src/index.ts",
-    "./src/modules/types.ts",
-    "./src/modules/util.ts",
-    "src/modules/eventSummary.ts",
-    "./src/modules/vector.ts",
-    "./src/modules/constants.ts",
-    "./src/modules/mutations.ts",
-  ]
+  "compilerOptions": { "target": "ES5", "outDir": "./dist", "module": "UMD" },
+  "files": ["./src/index.ts"]
 }
