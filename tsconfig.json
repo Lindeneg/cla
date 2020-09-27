@@ -1,4 +1,18 @@
 {
-  "compilerOptions": { "target": "ES5", "outDir": "./dist", "module": "UMD" },
-  "files": ["./src/index.ts"]
+  "compilerOptions": {
+    "target": "ES5",
+    "outDir": "./dist",
+    "module": "UMD"
+  },
+  "files": [
+    "./src/index.ts",
+    "./src/util/constants.ts",
+    "./src/util/types.ts",
+    "./src/lib/mutationSummary.ts",
+    "./src/lib/treeMirror.ts",
+    "./src/modules/webalyze.ts",
+    "./src/modules/domObserver.ts",
+    "./src/modules/eventObserver.ts",
+    "./src/modules/observer.ts"
+  ]
 }

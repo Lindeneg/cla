@@ -1,5 +1,6 @@
-const main = (msg: string): number => {
-  console.log(msg);
-  return 0;
-};
-main("Hello there!");
+import {
+    Observer
+} from './modules/observer';
+
+
+(<any>window).WebalyzeObserver = Observer;
