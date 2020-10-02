@@ -4,17 +4,36 @@ license : Apache License Version 2.0
 */
 
 import {
-    Movement,
+    MOVEMENT,
     StringMap,
     NumberMap
-} from './types';
+} from '../util/types';
 import {
     MUTATION_SUMMARY_ID_PROP
-} from './constants';
+} from '../util/constants';
+
+
+interface Query {
+    element ? : string;
+    attribute ? : string;
+    all ? : boolean;
+    characterData ? : boolean;
+    elementAttributes ? : string;
+    attributeList ? : string[];
+    elementFilter ? : Selector[];
+}
+
+interface Options {
+    callback: (summaries: Summary[]) => any;
+    queries: Query[];
+    rootNode ? : Node;
+    oldPreviousSibling ? : boolean;
+    observeOwnChanges ? : boolean;
+}
 
 const MutationObserverCtor = globalThis.window.MutationObserver;
 
-class NodeMap < T > {
+export class NodeMap < T > {
 
     private static ID_PROP: string = MUTATION_SUMMARY_ID_PROP;
     private static nextId_: number = 1;
@@ -271,13 +290,13 @@ class TreeChanges extends NodeMap < NodeChange > {
         return wasReachable;
     }
 
-    reachabilityChange(node: Node): Movement {
+    reachabilityChange(node: Node): MOVEMENT {
         if (this.getIsReachable(node)) {
             return this.getWasReachable(node) ?
-                Movement.STAYED_IN : Movement.ENTERED;
+                MOVEMENT.STAYED_IN : MOVEMENT.ENTERED;
         }
         return this.getWasReachable(node) ?
-            Movement.EXITED : Movement.STAYED_OUT;
+            MOVEMENT.EXITED : MOVEMENT.STAYED_OUT;
     }
 }
 
@@ -286,11 +305,11 @@ class MutationProjection {
     private treeChanges: TreeChanges;
     private entered: Node[];
     private exited: Node[];
-    private stayedIn: NodeMap < Movement > ;
+    private stayedIn: NodeMap < MOVEMENT > ;
     private visited: NodeMap < boolean > ;
     private childListChangeMap: NodeMap < ChildListChange > ;
     private characterDataOnly: boolean;
-    private matchCache: NumberMap < NodeMap < Movement >> ;
+    private matchCache: NumberMap < NodeMap < MOVEMENT >> ;
 
     constructor(public rootNode: Node,
         public mutations: MutationRecord[],
@@ -301,7 +320,7 @@ class MutationProjection {
         this.treeChanges = new TreeChanges(rootNode, mutations);
         this.entered = [];
         this.exited = [];
-        this.stayedIn = new NodeMap < Movement > ();
+        this.stayedIn = new NodeMap < MOVEMENT > ();
         this.visited = new NodeMap < boolean > ();
         this.childListChangeMap = undefined;
         this.characterDataOnly = undefined;
@@ -321,46 +340,46 @@ class MutationProjection {
         }
     }
 
-    visitNode(node: Node, parentReachable: Movement): void {
+    visitNode(node: Node, parentReachable: MOVEMENT): void {
         if (this.visited.has(node)) {
             return;
         }
         this.visited.set(node, true);
         const change: NodeChange = this.treeChanges.get(node);
-        let reachable: Movement = parentReachable;
+        let reachable: MOVEMENT = parentReachable;
         if ((change && change.childList) || reachable == undefined) {
             reachable = this.treeChanges.reachabilityChange(node);
         }
 
 
-        if (reachable === Movement.STAYED_OUT) {
+        if (reachable === MOVEMENT.STAYED_OUT) {
             return;
         }
 
         this.matchabilityChange(node);
 
-        if (reachable === Movement.ENTERED) {
+        if (reachable === MOVEMENT.ENTERED) {
             this.entered.push(node);
-        } else if (reachable === Movement.EXITED) {
+        } else if (reachable === MOVEMENT.EXITED) {
             this.exited.push(node);
             this.ensureHasOldPreviousSiblingIfNeeded(node);
 
-        } else if (reachable === Movement.STAYED_IN) {
-            let movement: Movement = Movement.STAYED_IN;
+        } else if (reachable === MOVEMENT.STAYED_IN) {
+            let movement: MOVEMENT = MOVEMENT.STAYED_IN;
 
             if (change && change.childList) {
                 if (change.oldParentNode !== node.parentNode) {
-                    movement = Movement.REPARENTED;
+                    movement = MOVEMENT.REPARENTED;
                     this.ensureHasOldPreviousSiblingIfNeeded(node);
                 } else if (this.calcReordered && this.wasReordered(node)) {
-                    movement = Movement.REORDERED;
+                    movement = MOVEMENT.REORDERED;
                 }
             }
 
             this.stayedIn.set(node, movement);
         }
 
-        if (reachable === Movement.STAYED_IN) {
+        if (reachable === MOVEMENT.STAYED_IN) {
             return;
         }
 
@@ -400,8 +419,8 @@ class MutationProjection {
 
         for (let i: number = 0; i < this.entered.length; i++) {
             const node: Node = this.entered[i];
-            const matchable: Movement = this.matchabilityChange(node);
-            if (matchable === Movement.STAYED_IN) {
+            const matchable: MOVEMENT = this.matchabilityChange(node);
+            if (matchable === MOVEMENT.STAYED_IN) {
                 summary.added.push(node);
             }
         }
@@ -409,12 +428,12 @@ class MutationProjection {
         const stayedInNodes: Node[] = this.stayedIn.keys();
         for (let i: number = 0; i < stayedInNodes.length; i++) {
             const node: Node = stayedInNodes[i];
-            const matchable: Movement = this.matchabilityChange(node);
-            if (matchable === Movement.STAYED_IN && (summary.reparented || summary.reordered)) {
-                const movement: Movement = this.stayedIn.get(node);
-                if (summary.reparented && movement === Movement.REPARENTED) {
+            const matchable: MOVEMENT = this.matchabilityChange(node);
+            if (matchable === MOVEMENT.STAYED_IN && (summary.reparented || summary.reordered)) {
+                const movement: MOVEMENT = this.stayedIn.get(node);
+                if (summary.reparented && movement === MOVEMENT.REPARENTED) {
                     summary.reparented.push(node);
-                } else if (summary.reordered && movement === Movement.REORDERED) {
+                } else if (summary.reordered && movement === MOVEMENT.REORDERED) {
                     summary.reordered.push(node);
                 }
             }
@@ -422,8 +441,8 @@ class MutationProjection {
 
         for (let i: number = 0; i < this.exited.length; i++) {
             const node: Node = this.exited[i];
-            const matchable: Movement = this.matchabilityChange(node);
-            if (matchable === Movement.STAYED_IN) {
+            const matchable: MOVEMENT = this.matchabilityChange(node);
+            if (matchable === MOVEMENT.STAYED_IN) {
                 summary.removed.push(node);
             }
         }
@@ -435,8 +454,8 @@ class MutationProjection {
             return change.oldParentNode ? change.oldParentNode : null;
         }
 
-        const reachabilityChange: Movement = this.treeChanges.reachabilityChange(node);
-        if (reachabilityChange === Movement.STAYED_OUT || reachabilityChange === Movement.ENTERED) {
+        const reachabilityChange: MOVEMENT = this.treeChanges.reachabilityChange(node);
+        if (reachabilityChange === MOVEMENT.STAYED_OUT || reachabilityChange === MOVEMENT.ENTERED) {
             throw Error('getOldParentNode requested on invalid node.');
         }
         return node.parentNode;
@@ -493,8 +512,8 @@ class MutationProjection {
                 continue;
             }
 
-            if (Movement.STAYED_IN !== this.treeChanges.reachabilityChange(node) ||
-                Movement.STAYED_IN !== this.matchabilityChange(node)) {
+            if (MOVEMENT.STAYED_IN !== this.treeChanges.reachabilityChange(node) ||
+                MOVEMENT.STAYED_IN !== this.matchabilityChange(node)) {
                 continue;
             }
 
@@ -543,7 +562,7 @@ class MutationProjection {
             result: Node[] = [];
         for (let i: number = 0; i < nodes.length; i++) {
             const target: Node = nodes[i];
-            if (Movement.STAYED_IN !== this.treeChanges.reachabilityChange(target)) {
+            if (MOVEMENT.STAYED_IN !== this.treeChanges.reachabilityChange(target)) {
                 continue;
             }
 
@@ -559,16 +578,16 @@ class MutationProjection {
         return result;
     }
 
-    computeMatchabilityChange(selector: Selector, el: Element): Movement {
+    computeMatchabilityChange(selector: Selector, el: Element): MOVEMENT {
         if (!this.matchCache) {
             this.matchCache = [];
         }
         if (!this.matchCache[selector.uid]) {
-            this.matchCache[selector.uid] = new NodeMap < Movement > ();
+            this.matchCache[selector.uid] = new NodeMap < MOVEMENT > ();
         }
 
-        const cache: NodeMap < Movement > = this.matchCache[selector.uid];
-        let result: Movement = cache.get(el);
+        const cache: NodeMap < MOVEMENT > = this.matchCache[selector.uid];
+        let result: MOVEMENT = cache.get(el);
         if (result === undefined) {
             result = selector.matchabilityChange(el, this.treeChanges.get(el));
             cache.set(el, result);
@@ -576,50 +595,50 @@ class MutationProjection {
         return result;
     }
 
-    matchabilityChange(node: Node): Movement {
+    matchabilityChange(node: Node): MOVEMENT {
         if (this.characterDataOnly) {
             switch (node.nodeType) {
                 case Node.COMMENT_NODE:
                 case Node.TEXT_NODE:
-                    return Movement.STAYED_IN;
+                    return MOVEMENT.STAYED_IN;
                 default:
-                    return Movement.STAYED_OUT;
+                    return MOVEMENT.STAYED_OUT;
             }
         }
 
         if (!this.selectors) {
-            return Movement.STAYED_IN;
+            return MOVEMENT.STAYED_IN;
         }
 
         if (node.nodeType !== Node.ELEMENT_NODE) {
-            return Movement.STAYED_OUT;
+            return MOVEMENT.STAYED_OUT;
         }
 
         const el: Element = < Element > node;
 
-        const matchChanges: Movement[] = this.selectors.map((selector: Selector) => {
+        const matchChanges: MOVEMENT[] = this.selectors.map((selector: Selector) => {
             return this.computeMatchabilityChange(selector, el);
         });
 
-        let accum: Movement = Movement.STAYED_OUT;
+        let accum: MOVEMENT = MOVEMENT.STAYED_OUT;
         let i: number = 0;
 
-        while (accum !== Movement.STAYED_IN && i < matchChanges.length) {
+        while (accum !== MOVEMENT.STAYED_IN && i < matchChanges.length) {
             switch (matchChanges[i]) {
-                case Movement.STAYED_IN:
-                    accum = Movement.STAYED_IN;
+                case MOVEMENT.STAYED_IN:
+                    accum = MOVEMENT.STAYED_IN;
                     break;
-                case Movement.ENTERED:
-                    if (accum === Movement.EXITED)
-                        accum = Movement.STAYED_IN;
+                case MOVEMENT.ENTERED:
+                    if (accum === MOVEMENT.EXITED)
+                        accum = MOVEMENT.STAYED_IN;
                     else
-                        accum = Movement.ENTERED;
+                        accum = MOVEMENT.ENTERED;
                     break;
-                case Movement.EXITED:
-                    if (accum === Movement.ENTERED)
-                        accum = Movement.STAYED_IN;
+                case MOVEMENT.EXITED:
+                    if (accum === MOVEMENT.ENTERED)
+                        accum = MOVEMENT.STAYED_IN;
                     else
-                        accum = Movement.EXITED;
+                        accum = MOVEMENT.EXITED;
                     break;
             }
 
@@ -652,7 +671,7 @@ class MutationProjection {
                 continue;
             }
 
-            if (this.treeChanges.reachabilityChange(mutation.target) !== Movement.STAYED_IN &&
+            if (this.treeChanges.reachabilityChange(mutation.target) !== MOVEMENT.STAYED_IN &&
                 !this.calcOldPreviousSibling) {
                 continue;
             }
@@ -803,7 +822,7 @@ class MutationProjection {
     }
 }
 
-class Summary {
+export class Summary {
     public added: Node[];
     public removed: Node[];
     public reparented: Node[];
@@ -987,12 +1006,12 @@ class Selector {
         return true;
     }
 
-    public matchabilityChange(el: Element, change: NodeChange): Movement {
+    public matchabilityChange(el: Element, change: NodeChange): MOVEMENT {
         var isMatching = this.isMatching(el);
         if (isMatching)
-            return this.wasMatching(el, change, isMatching) ? Movement.STAYED_IN : Movement.ENTERED;
+            return this.wasMatching(el, change, isMatching) ? MOVEMENT.STAYED_IN : MOVEMENT.ENTERED;
         else
-            return this.wasMatching(el, change, isMatching) ? Movement.EXITED : Movement.STAYED_OUT;
+            return this.wasMatching(el, change, isMatching) ? MOVEMENT.EXITED : MOVEMENT.STAYED_OUT;
     }
 
     public static parseSelectors(input: string): Selector[] {
@@ -1417,24 +1436,6 @@ function elementFilterAttributes(selectors: Selector[]): string[] {
     });
 
     return Object.keys(attributes);
-}
-
-interface Query {
-    element ? : string;
-    attribute ? : string;
-    all ? : boolean;
-    characterData ? : boolean;
-    elementAttributes ? : string;
-    attributeList ? : string[];
-    elementFilter ? : Selector[];
-}
-
-interface Options {
-    callback: (summaries: Summary[]) => any;
-    queries: Query[];
-    rootNode ? : Node;
-    oldPreviousSibling ? : boolean;
-    observeOwnChanges ? : boolean;
 }
 
 export class MutationSummary {

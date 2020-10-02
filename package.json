@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && ./build_bundle"
+    "build": "./build_bundle"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Christian Lindeneg",
+  "license": "MIT",
   "dependencies": {
-    "javascript-obfuscator": "^2.1.0",
-    "prettier": "^2.1.1",
-    "typescript": "^4.0.2"
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.3"
   }
 }

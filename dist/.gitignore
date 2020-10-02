@@ -1,2 +1,4 @@
 modules/
+lib/
+util/
 *.js
