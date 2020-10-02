@@ -65,9 +65,7 @@ export class EventObserver {
             }
             switch (eventState.event) {
                 case EVENT.MOUSE_MOVE:
-                    if (lastEvent && lastEvent.event === EVENT.MOUSE_MOVE) {
-                        shouldPush = this.handleMousemove(lastEvent, eventState);
-                    }
+                    shouldPush = this.handleMousemove(lastEvent, eventState);
                     break;
                 case EVENT.MOUSE_DOWN:
                     if (lastEvent && lastEvent.event === EVENT.MOUSE_DOWN && eventState.timestamp - lastEvent.timestamp < MOUSE_MOVE_INTERVAL) {
@@ -75,9 +73,7 @@ export class EventObserver {
                     }
                     break;
                 case EVENT.MOUSE_SCROLL:
-                    if (lastEvent && lastEvent.event === EVENT.MOUSE_SCROLL) {
-                        shouldPush = this.handleMouseScroll(lastEvent, eventState);
-                    }
+                    shouldPush = this.handleMouseScroll(lastEvent, eventState);
                     break;
                 case EVENT.WINDOW_RESIZE:
                     if (lastEvent && lastEvent.event === EVENT.WINDOW_RESIZE) {
@@ -109,18 +105,23 @@ export class EventObserver {
     }
 
     private handleMousemove(lastEvent: EventState, currentEvent: EventState): boolean {
-        const dx = lastEvent.x - currentEvent.x,
-            dy = lastEvent.y - currentEvent.y;
-        const mouseState: Vector2D = {x: 0 ? 1 : -1, y: dy >= 0 ? 1 : -1};
         let shouldPush = true;
-        if (Math.abs(dx) < MOUSE_MOVE_DIFF && Math.abs(dy) < MOUSE_MOVE_DIFF) {
-            shouldPush = false;
-        } else {
-            if (mouseState.x !== this._lastMouseState.x || mouseState.y !== this._lastMouseState.y) {
-                this._lastMouseState = mouseState;
-            } else {
+        if (lastEvent) {
+            const dx = lastEvent.x - currentEvent.x,
+                dy = lastEvent.y - currentEvent.y;
+            const mouseState: Vector2D = {
+                x: 0 ? 1 : -1,
+                y: dy >= 0 ? 1 : -1
+            };
+            if (Math.abs(dx) < MOUSE_MOVE_DIFF && Math.abs(dy) < MOUSE_MOVE_DIFF) {
                 shouldPush = false;
-                this._container[this._container.length - 1] = currentEvent;
+            } else {
+                if (mouseState.x !== this._lastMouseState.x || mouseState.y !== this._lastMouseState.y) {
+                    this._lastMouseState = mouseState;
+                } else {
+                    shouldPush = false;
+                    this._container[this._container.length - 1] = currentEvent;
+                }
             }
         }
         return shouldPush;
@@ -128,18 +129,20 @@ export class EventObserver {
 
     private handleMouseScroll(lastEvent: EventState, currentEvent: EventState): boolean {
         let shouldPush: boolean = true;
-        if (lastEvent.yd > currentEvent.yd) {
-          currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_UP;
-        } else if (lastEvent.yd < currentEvent.yd) {
-          currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_DOWN;
-        } else if (lastEvent.xd > currentEvent.xd) {
-          currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_LEFT;
-        } else if (lastEvent.xd < currentEvent.xd) {
-          currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_RIGHT;
-        }
-        if (!(typeof lastEvent.scrollDirection === 'undefined') && lastEvent.scrollDirection === currentEvent.scrollDirection) {
-          shouldPush = false;
-          this._container[this._container.length - 1] = currentEvent;
+        if (lastEvent) {
+            if (lastEvent.yd > currentEvent.yd) {
+                currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_UP;
+            } else if (lastEvent.yd < currentEvent.yd) {
+                currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_DOWN;
+            } else if (lastEvent.xd > currentEvent.xd) {
+                currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_LEFT;
+            } else if (lastEvent.xd < currentEvent.xd) {
+                currentEvent.scrollDirection = EVENT.MOUSE_SCROLL_RIGHT;
+            }
+            if (lastEvent.scrollDirection === currentEvent.scrollDirection) {
+                shouldPush = false;
+                this._container[this._container.length - 1] = currentEvent;
+            }
         }
         return shouldPush;
     }
