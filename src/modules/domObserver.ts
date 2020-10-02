@@ -1,13 +1,16 @@
 import {
-    TreeMirrorClient
-} from '../lib/treeMirror';
-import {
     TreeClientCallbacks,
     TreeClientInitData,
     TreeClientChangedData,
     ObserverDomInit,
     ObserverDomChange
 } from '../util/types';
+import {
+    TreeMirrorClient
+} from '../lib/treeMirror';
+import {
+    Logger
+} from '../util/util';
 
 
 export class DOMObserver {
@@ -18,6 +21,8 @@ export class DOMObserver {
     private _callbacks: TreeClientCallbacks;
 
     constructor(targetNode: Node, callbacks: TreeClientCallbacks) {
+
+        Logger.log('initializing dom observer');
 
         this.treeMirrorClient = null;
         this._targetNode = targetNode;
@@ -50,22 +55,29 @@ export class DOMObserver {
 
     public connect(): void {
         if (this.treeMirrorClient === null) {
+            Logger.log('connecting dom mirror');
             this.treeMirrorClient = this.createTreeMirror();
+        } else {
+            Logger.log('dom mirror already connected');
         }
     }
 
     public disconnect(): void {
         if (this.treeMirrorClient !== null) {
+            Logger.log('disconnecting dom mirror');
             this.treeMirrorClient.disconnect();
             this.treeMirrorClient = null;
+        } else {
+            Logger.log('dom mirror already disconnected');
         }
     }
 
     public static createFromTargetObject(initTarget: ObserverDomInit[], changedTarget: ObserverDomChange[]): DOMObserver {
+        // redo std callbacks, check for relevant changes, ignore where possible
         const target: Node = document, callbacks: TreeClientCallbacks = {
             init: (data: TreeClientInitData) => {
-                console.log('Initial DOM');
-                console.log(data);
+                Logger.log('handling initial dom');
+                Logger.log(data);
                 initTarget.push({
                     timestamp: new Date().getTime(),
                     dom: data,
@@ -77,9 +89,8 @@ export class DOMObserver {
                 });
             },
             changed: (data: TreeClientChangedData) => {
-                // todo: detect change importance, ignore where possible
-                console.log('Changed DOM');
-                console.log(data);
+                Logger.log('handling ' + (data.attrs.length + data.removed.length + data.changed.length + data.text.length) + ' dom mutations');
+                Logger.log(data);
                 changedTarget.push({
                     timestamp: new Date().getTime(),
                     dom: data

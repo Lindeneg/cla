@@ -1,6 +1,220 @@
-<html>
-  <body>
-    <div id="root"></div>
-    <script src="../dist/bundle.min.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/css/app.css" rel="stylesheet">
+    <script src='./assets/js/testApp.min.js'></script>
+    <script src='./assets/js/bundle.min.js' defer></script>
+    <script src='./assets/js/testAppScript.js' defer></script>
+</head>
+
+<body>
+
+    <div id="root-div" class="container-fluid">
+        <div id="nav-and-player-info" class="float-left">
+            <div id="nav-control-div">
+                <button id="nav-control" type="button" class="btn btn-outline-secondary">Hide Menu</button>
+            </div>
+            <div id="nav-div" class="">
+                <div class="row">
+                    <div class="col">
+                        <button event="0" type="button" class="btn btn-info nav-entries">New Route</button>
+                        <button event="1" type="button" class="btn btn-info nav-entries">Route Overview</button>
+                        <button event="2" type="button" class="btn btn-info nav-entries">Build Queue</button>
+                        <button event="3" type="button" class="btn btn-info nav-entries">Finances</button>
+                        <button event="4" type="button" class="btn btn-info nav-entries">Upgrades</button>
+                        <button event="5" type="button" class="btn btn-info nav-entries">Opponents</button>
+                        <button event="6" type="button" class="btn btn-info nav-entries">End Turn</button>
+                    </div>
+                </div>
+            </div>
+            <div id="player-info-div" class="">
+                <div class="card">
+                    <div class="card-header bg-light text-body">
+                        Player
+                        <span id="player-name" class="player-info-entry text-body card-span">
+
+                        </span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-light text-body">
+                            Turn
+                            <span id="player-turn" class="player-info-entry text-body card-span">
+
+                            </span>
+                        </li>
+                        <li class="list-group-item bg-light text-body">
+                            Routes
+                            <span id="player-routes" class="player-info-entry text-body card-span">
+
+                            </span>
+                        </li>
+                        <li class="list-group-item bg-light text-body">
+                            Gold
+                            <span id="player-gold" class="player-info-entry text-danger card-span">
+
+                            </span>
+                        </li>
+                        <li class="list-group-item bg-light text-body">
+                            Income
+                            <span id="player-income" class="player-info-entry text-danger card-span">
+
+                            </span>
+                        </li>
+                        <li class="list-group-item bg-light text-body">
+                            Expense
+                            <span id="player-expense" class="player-info-entry text-danger card-span">
+
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="end-turn-loading" class="">
+            <button id="loading-spinner-btn" class="btn btn-info hide" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+            </button>
+        </div>
+
+        <div class="content">
+
+            <div id="new-route" class="hide menu-item-active-div">
+                <div id="specify-route" class="specify">
+                    <ul class="list-group selection-list">
+                        <button id="new-route-specify-route-continue" type="button"
+                            class="btn btn-danger btn-lg text-light continue-btn">
+                            Continue
+                        </button>
+                    </ul>
+                    <ul class="list-group selection-list">
+                        <li id="from-city-from-city" class="list-group-item bg-dark text-light from-to-city">
+                            <span class="weighted">
+                                FROM CITY
+                            </span>
+                            <div id="from-city-dropdown" class="dropdown-content">
+                            </div>
+                            <span class="from-city-card-entry text-light card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Current Routes
+                            <span class="from-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Max Routes
+                            <span class="from-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Size
+                            <span class="from-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Is Start City
+                            <span class="from-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <span class="from-city-card-entry">
+                        </span>
+                        <span class="from-city-card-entry">
+                        </span>
+                    </ul>
+                    <ul id="to-city-ul" class="list-group selection-list">
+                        <li id="to-city-to-city" class="list-group-item bg-dark text-light from-to-city">
+                            <span class="weighted">
+                                TO CITY
+                            </span>
+                            <div id="to-city-dropdown" class="dropdown-content">
+                            </div>
+                            <span class="to-city-card-entry text-light card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Current Routes
+                            <span class="to-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Distance
+                            <span class="to-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Gold Cost
+                            <span class="to-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            Turn Cost
+                            <span class="to-city-card-entry text-body card-span">
+                            </span>
+                        </li>
+                        <span class="to-city-card-entry">
+                        </span>
+                        <span class="to-city-card-entry">
+                        </span>
+                    </ul>
+                </div>
+                <div id="specify-train" class="hide specify">
+                    <ul id="specify-train-ul" class="list-group selection-list ul-largest">
+                    </ul>
+                    <ul class="list-group selection-list">
+                        <li class="list-group-item bg-light text-dark new-route-current-cost weighted">
+                            Current Cost
+                            <span id="specify-train-current-cost" class="text-dark card-span">
+                            </span>
+                        </li>
+                        <button id="new-route-specify-train-continue" type="button"
+                            class="btn btn-danger btn-lg text-light continue-btn">
+                            Continue
+                        </button>
+                    </ul>
+                </div>
+                <div id="specify-cargo" class="hide specify">
+                    <ul class="list-group selection-list">
+                        <button id="new-route-specify-cargo-continue" type="button"
+                            class="btn btn-danger btn-lg text-light continue-btn">
+                            Continue
+                        </button>
+                    </ul>
+                    <ul id="specify-cargo-ul-former" class="list-group selection-list">
+                    </ul>
+                    <ul id="specify-cargo-ul-latter" class="list-group selection-list">
+                    </ul>
+                </div>
+                <div id="specify-confirmation" class="hide specify">
+                </div>
+            </div>
+
+            <div id="edit-route" class="hide menu-item-active-div">
+                WORK IN PROGRESS - EDIT ROUTE
+            </div>
+
+            <div id="build-queue" class="hide menu-item-active-div">
+            </div>
+
+            <div id="finances" class="hide menu-item-active-div">
+            </div>
+
+            <div id="upgrades" class="hide menu-item-active-div">
+                WORK IN PROGRESS - UPGRADES
+            </div>
+
+            <div id="opponents" class="hide menu-item-active-div">
+                WORK IN PROGRESS - OPPONENTS
+            </div>
+
+        </div>
+    </div>
+</body>
+
 </html>

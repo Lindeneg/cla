@@ -3,4 +3,7 @@ import {
 } from './modules/observer';
 
 
-(<any>window).WebalyzeObserver = Observer;
+window['webalyzeDebug'] = 1;
+setTimeout(() => {
+    window['webalyzeObserver'] = new Observer(), window['webalyzeObserver'].start();
+}, 500);

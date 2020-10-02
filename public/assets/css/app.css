@@ -1,0 +1,162 @@
+.nav-entries, #nav-control, #loading-spinner-btn {
+    width: 18em;
+    margin: 0.5em;
+}
+
+#end-turn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.continue-btn:hover {
+    border: none;
+    background-color: #ffc107;
+    color: black !important;
+}
+
+.final-btn {
+    border: solid 1px black;
+}
+
+.final-btn:hover, .specify-cargo-entry:hover {
+    border: none;
+    background-color: #28a745;
+    color: white !important;
+}
+
+.from-to-city:hover, 
+.specified-cargo-entry:hover, 
+#queue-list-entry:hover, 
+#finance-turn:hover 
+{
+    background-color: #fd7e14 !important;
+}
+
+#nav-and-player-info {
+    height: 50em;
+    padding-top: 2.45em;
+}
+
+#nav-control {
+    background-color: white;
+    color: black;
+}
+
+#nav-div, #player-info-div {
+    max-width: 18em;
+}
+
+#player-info-div, .content {
+    margin-left: 0.5em;
+    margin-top: 1.5em;
+}
+
+#specify-train-entry:hover {
+    background-color: #28a745!important;
+}
+
+#to-city-ul, #specify-cargo-ul-latter {
+    position: absolute;
+    margin-left: 54em;
+    margin-top: 5.91em;
+    width: 35em;
+    top: 0;
+}
+
+.hide {
+    visibility: hidden !important;
+    width: 0em !important;
+    height: 0em !important;
+    margin: 0em !important;
+}
+
+.selection-list {
+    min-width: 18em;
+    max-width: 35em;
+    padding-top: 0.5em;
+}
+
+.card-span  {
+    float: right;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #343a40;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: 0;
+    top: 3em;
+    }
+
+.dropdown-content .to-city-dropdown-entry {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.to-city-dropdown-entry:hover {
+    background-color: #28a745;
+}
+
+.continue-btn {
+    width: 56.5em;
+}
+
+.ul-largest {
+    max-width: 70.5em;
+}
+
+.new-route-current-cost {
+    width: 70.5em;
+    border:solid 1px black
+}
+
+.weighted {
+    font-weight: 700;
+}
+
+
+
+
+@media only screen and (max-width: 660px) {
+    .selection-list {
+        min-width: 18em !important;
+        max-width: 18em !important;
+        padding-top: 0.5em !important;
+        margin-top: 1em !important;
+    }
+
+    #nav-and-player-info  {
+        height: 100% !important;
+    }
+    .product-span {
+        font-size: 0.8em !important;
+    }
+}
+
+@media only screen and (max-width: 1460px) {
+    #to-city-ul, #specify-cargo-ul-latter {
+        position: unset !important;
+        margin-left: unset !important;
+        margin-top: unset !important;
+        width: unset !important;
+        top: unset !important;
+    }
+    .continue-btn {
+        width: unset !important;
+    }
+    .ul-largest {
+        max-width: 35em;
+    }
+    .new-route-current-cost {
+        width: unset;
+    }
+}
