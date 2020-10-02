@@ -8,6 +8,7 @@
     "./src/index.ts",
     "./src/util/constants.ts",
     "./src/util/types.ts",
+    "./src/util/util.ts",
     "./src/lib/mutationSummary.ts",
     "./src/lib/treeMirror.ts",
     "./src/modules/webalyze.ts",
