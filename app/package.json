@@ -1,0 +1,22 @@
+{
+  "name": "none",
+  "version": "0.1",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./build"
+  },
+  "keywords": [],
+  "author": "Christian Lindeneg",
+  "license": "MIT",
+  "dependencies": {
+    "@node-minify/cli": "^6.1.0",
+    "@node-minify/uglify-js": "^6.1.0",
+    "browserify": "^17.0.0",
+    "javascript-obfuscator": "^2.5.0",
+    "node-minify": "^3.6.0",
+    "prettier": "^2.1.2",
+    "typescript": "^4.0.3"
+  }
+}

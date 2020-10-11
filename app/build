@@ -1,0 +1,5 @@
+#!/bin/bash
+
+yarn tsc && yarn browserify --entry './dist/index.js' --outfile './dist/bundle.js'
+yarn node-minify --compressor uglify-es --input './dist/bundle.js' --output './dist/bundle.min.js'
+yarn javascript-obfuscator './dist/bundle.min.js' --output './dist/app.min.js' --string-array false
